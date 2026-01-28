@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   BookOpen,
@@ -202,14 +203,16 @@ export default function Sidebar() {
               !isSidebarOpen && "lg:flex lg:justify-center"
             )}
           >
-            <img
+            <Image
               src="/Logo 1@2x-8 (1).png"
               className={cn(
                 "text-2xl font-bold text-primary transition-all duration-300",
                 !isSidebarOpen && "lg:text-xl lg:text-center"
               )}
-              alt=""
+              alt="NAVI Logo"
               width={100}
+              height={100}
+              priority
             />
             {isSidebarOpen && (
               <p className="text-xs text-slate-500 mt-1 animate-in fade-in duration-300">

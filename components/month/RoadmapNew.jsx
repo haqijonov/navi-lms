@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback, memo } from "react";
 import { createPortal } from "react-dom";
 import {
   Check,
@@ -132,7 +132,11 @@ function cn(...classes) {
 }
 
 /** Tooltip rendered in portal (body) so it never clips with road layers */
-function LessonTooltip({ open, anchorRect, lesson }) {
+const LessonTooltip = memo(function LessonTooltip({
+  open,
+  anchorRect,
+  lesson,
+}) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   if (!mounted || !open || !anchorRect || !lesson) return null;
@@ -211,7 +215,7 @@ function LessonTooltip({ open, anchorRect, lesson }) {
   );
 
   return createPortal(content, document.body);
-}
+});
 
 /** Strong curvy serpentine journey: bottom-left -> top-right */
 function buildSerpentinePathPoints({ lessonsCount, width, height, padding }) {
@@ -343,12 +347,12 @@ export default function Roadmap({ lessons = mockLessons, monthId }) {
     };
   }, []);
 
-  const stopInertia = () => {
+  const stopInertia = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = null;
-  };
+  }, []);
 
-  const startInertia = () => {
+  const startInertia = useCallback(() => {
     const el = scrollContainerRef.current;
     if (!el) return;
     stopInertia();
@@ -365,9 +369,9 @@ export default function Roadmap({ lessons = mockLessons, monthId }) {
     };
 
     rafRef.current = requestAnimationFrame(step);
-  };
+  }, [stopInertia]);
 
-  const onPointerDown = (e) => {
+  const onPointerDown = useCallback((e) => {
     const el = scrollContainerRef.current;
     if (!el) return;
 
@@ -384,9 +388,9 @@ export default function Roadmap({ lessons = mockLessons, monthId }) {
     lastXRef.current = e.clientX;
     lastTRef.current = performance.now();
     velocityRef.current = 0;
-  };
+  }, []);
 
-  const onPointerMove = (e) => {
+  const onPointerMove = useCallback((e) => {
     const el = scrollContainerRef.current;
     if (!el || !isDownRef.current) return;
 
@@ -408,26 +412,26 @@ export default function Roadmap({ lessons = mockLessons, monthId }) {
 
     lastXRef.current = x;
     lastTRef.current = now;
-  };
+  }, []);
 
-  const onPointerUp = () => {
+  const onPointerUp = useCallback(() => {
     if (!isDownRef.current) return;
     isDownRef.current = false;
     startInertia();
-  };
+  }, []);
 
   // tooltip close debounce
   const hoverCloseTimer = useRef(null);
-  const scheduleClose = () => {
+  const scheduleClose = useCallback(() => {
     if (hoverCloseTimer.current) clearTimeout(hoverCloseTimer.current);
     hoverCloseTimer.current = setTimeout(() => {
       setHoveredLessonId(null);
       setAnchorRect(null);
-    }, 120);
-  };
-  const cancelClose = () => {
+    }, 12);
+  }, []);
+  const cancelClose = useCallback(() => {
     if (hoverCloseTimer.current) clearTimeout(hoverCloseTimer.current);
-  };
+  }, []);
 
   const carPos = points[currentIndex] || points[0];
   const carAngle = angleFromNeighbors(points, currentIndex);
@@ -676,7 +680,7 @@ export default function Roadmap({ lessons = mockLessons, monthId }) {
                     {clickable ? (
                       <Link
                         href={href}
-                        prefetch={false}
+                        prefetch={true}
                         className="outline-none block"
                         aria-label={`Open lesson ${lesson.order} video`}
                         // ✅ prevent container drag capture from killing click
@@ -781,7 +785,7 @@ export default function Roadmap({ lessons = mockLessons, monthId }) {
   );
 }
 
-function LegendItem({ icon, label, color, glow }) {
+const LegendItem = memo(function LegendItem({ icon, label, color, glow }) {
   return (
     <div className="flex items-center gap-2 text-xs text-slate-600">
       <div
@@ -798,4 +802,4 @@ function LegendItem({ icon, label, color, glow }) {
       <span className="font-medium">{label}</span>
     </div>
   );
-}
+});

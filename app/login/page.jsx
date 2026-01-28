@@ -33,12 +33,9 @@ export default function LoginPage() {
     if (!validate()) return
 
     setIsLoading(true)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800))
-    setIsLoading(false)
-    
-    // Redirect to courses
+    // Navigate immediately - no artificial delay
     router.push('/courses')
+    // Note: setIsLoading(false) not needed as component unmounts on navigation
   }
 
   return (

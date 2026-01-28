@@ -1,12 +1,23 @@
 'use client'
 
 import { useParams } from 'next/navigation'
+import dynamic from 'next/dynamic'
+import { Suspense } from 'react'
 import { getMonthById } from '@/data/fakeLms'
 import { Progress } from '@/components/ui/progress'
-import RoadmapNew from '@/components/month/RoadmapNew'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+
+// Dynamically import heavy Roadmap component
+const RoadmapNew = dynamic(() => import('@/components/month/RoadmapNew'), {
+  loading: () => (
+    <div className="flex items-center justify-center h-[600px]">
+      <div className="text-slate-500">Loading roadmap...</div>
+    </div>
+  ),
+  ssr: true,
+})
 
 export default function MonthDetailPage() {
   const params = useParams()
@@ -61,7 +72,13 @@ export default function MonthDetailPage() {
       {/* Roadmap */}
       <div className="glass-strong rounded-3xl p-8 border border-slate-200/50 shadow-lg bg-gradient-to-br from-white via-primary/5 to-white">
         <h2 className="text-2xl font-bold text-slate-900 mb-8">Lesson Roadmap</h2>
-        <RoadmapNew lessons={month.lessons} monthId={month.id} />
+        <Suspense fallback={
+          <div className="flex items-center justify-center h-[600px]">
+            <div className="text-slate-500">Loading roadmap...</div>
+          </div>
+        }>
+          <RoadmapNew lessons={month.lessons} monthId={month.id} />
+        </Suspense>
       </div>
     </div>
   )

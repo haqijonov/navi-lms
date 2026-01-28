@@ -1,9 +1,10 @@
 'use client'
 
+import Link from 'next/link'
 import { Lock } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-export default function BlockCard({ block, months, onMonthClick }) {
+export default function BlockCard({ block, months }) {
   const isLocked = block.status === 'locked'
 
   return (
@@ -29,9 +30,9 @@ export default function BlockCard({ block, months, onMonthClick }) {
       {!isLocked && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5">
           {months.map((month) => (
-            <button
+            <Link
               key={month.id}
-              onClick={() => onMonthClick(month.id)}
+              href={`/courses/month/${month.id}`}
               className="text-left p-5 rounded-3xl glass border border-slate-200/50 hover:border-primary/40 hover:shadow-lg transition-all duration-300 group hover:scale-105 active:scale-95 min-h-[160px] flex flex-col"
             >
               <div className="flex items-center justify-between mb-3">
@@ -58,7 +59,7 @@ export default function BlockCard({ block, months, onMonthClick }) {
                   style={{ width: `${month.progress}%` }}
                 />
               </div>
-            </button>
+            </Link>
           ))}
         </div>
       )}

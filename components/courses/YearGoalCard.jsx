@@ -1,5 +1,3 @@
-'use client'
-
 export default function YearGoalCard() {
   return (
     <div className="rounded-3xl p-8 glass-strong border border-slate-200/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-white via-primary/5 to-white">

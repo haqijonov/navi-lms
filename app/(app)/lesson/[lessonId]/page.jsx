@@ -1,6 +1,7 @@
 'use client'
 
 import { useParams, useSearchParams, useRouter } from 'next/navigation'
+import { Suspense } from 'react'
 import { getLessonById, getLessonContent } from '@/data/fakeLms'
 import { ArrowLeft, CheckCircle2, Circle, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -124,14 +125,22 @@ export default function LessonPage() {
       </div>
 
       {/* Tabs */}
-      <LessonTabs
-        lessonId={params.lessonId}
-        content={{
-          video: content.video,
-          theory: content.theory,
-          tasks: content.tasks,
-        }}
-      />
+      <Suspense fallback={
+        <div className="glass-strong rounded-3xl p-8 border border-slate-200/50 shadow-lg">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-slate-500">Loading lesson content...</div>
+          </div>
+        </div>
+      }>
+        <LessonTabs
+          lessonId={params.lessonId}
+          content={{
+            video: content.video,
+            theory: content.theory,
+            tasks: content.tasks,
+          }}
+        />
+      </Suspense>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { courseYear, blocks, months } from '@/data/fakeLms'
 import { Progress } from '@/components/ui/progress'
 import BlockCard from '@/components/courses/BlockCard'
@@ -10,14 +10,8 @@ import { Play, Target, TrendingUp } from 'lucide-react'
 import { getMonthById } from '@/data/fakeLms'
 
 export default function CoursesPage() {
-  const router = useRouter()
-
   const block1Months = months.filter(m => blocks[0].months.includes(m.number))
   const block2Months = months.filter(m => blocks[1].months.includes(m.number))
-
-  const handleMonthClick = (monthId) => {
-    router.push(`/courses/month/${monthId}`)
-  }
 
   // Find current lesson for "Continue Learning" CTA
   const currentMonth = months.find(m => m.status === 'current')
@@ -102,14 +96,12 @@ export default function CoursesPage() {
         <BlockCard
           block={blocks[0]}
           months={block1Months}
-          onMonthClick={handleMonthClick}
         />
 
         {/* Block 2 */}
         <BlockCard
           block={blocks[1]}
           months={block2Months}
-          onMonthClick={handleMonthClick}
         />
       </div>
 

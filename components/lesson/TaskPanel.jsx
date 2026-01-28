@@ -20,8 +20,8 @@ export default function TaskPanel({ content }) {
 
   const handleSubmit = async () => {
     setIsSubmitting(true)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800))
+    // Submit immediately - no artificial delay
+    // In production, replace with actual API call
     setIsSubmitting(false)
     setIsSubmitted(true)
   }
